@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0F1D18">
+<title>Shop the Catalogue — Elysian Finds</title>
+<meta name="description" content="Browse the full Elysian Finds jewelry catalogue. Filter by category, occasion and price, then buy on Meesho or enquire.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="page-loader" id="page-loader">
+  <div class="page-loader-inner">
+    <svg class="page-loader-mark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M35 25 L65 25 L85 42 L50 90 L15 42 Z M15 42 L85 42 M35 25 L50 90 M65 25 L50 90"/>
+    </svg>
+    <p class="page-loader-word">Elysian <em>Finds</em></p>
+    <div class="page-loader-bar"></div>
+  </div>
+</div>
+
+
+<header class="site-header">
+  <nav class="nav">
+    <a href="index.html" class="logo">Elysian <em>Finds</em></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogue.html" class="active">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="wishlist.html" class="wish-nav-link">Wishlist<span class="wishlist-badge" style="display:none;">0</span></a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" id="nav-whatsapp" class="btn btn-outline">WhatsApp Us</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="page-header">
+  <div class="container">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Shop</p>
+    <h1>The full catalogue</h1>
+    <p>Every piece we currently list, in one place. Buy directly on Meesho or send us a message if you'd like to ask something first.</p>
+  </div>
+</div>
+
+  <div class="container">
+    <div class="filter-toolbar">
+      <div class="filter-search">
+        <label for="f-search">Search</label>
+        <input type="search" id="f-search" placeholder="Search products…">
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Category</span>
+        <div class="chip-row" id="category-chips"></div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Occasion</span>
+        <div class="chip-row" id="occasion-chips"></div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">Sort by</span>
+        <div class="chip-row" id="sort-chips"></div>
+      </div>
+    </div>
+    <div class="results-count" id="results-count"></div>
+
+    <div class="grid" id="product-grid"></div>
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <p>No pieces match those filters just yet. Try clearing a filter, or ask us — we may have it coming soon.</p>
+    </div>
+  </div>
+
+  <section class="section section-dim">
+    <div class="container center-cta">
+      <h2>Can't find what you're picturing?</h2>
+      <p>We add new designs regularly and can also source specific requests. Tell us what you're after.</p>
+      <a href="contact.html" class="btn btn-gold">Request a Design</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo" style="color:#F6F1E7">Elysian <em>Finds</em></a>
+        <p style="margin-top:16px;">A curated jewelry catalogue. We showcase the pieces — you buy through our Meesho store or connect with us directly.</p>
+      </div>
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="catalogue.html">Full Catalogue</a></li>
+          <li><a href="catalogue.html?category=Rings">Rings</a></li>
+          <li><a href="catalogue.html?category=Necklaces">Necklaces</a></li>
+          <li><a href="catalogue.html?category=Earrings">Earrings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach us</h4>
+        <ul>
+          <li><a href="#" id="footer-whatsapp">WhatsApp Us</a></li>
+          <li><a href="mailto:hello@elysianfinds.com">hello@elysianfinds.com</a></li>
+          <li><a href="https://www.meesho.com/" target="_blank" rel="noopener">Our Meesho Store</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Elysian Finds. All rights reserved.</span>
+      <span>Product listings and checkout are fulfilled via Meesho.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/icons.js"></script>
+<script src="js/products.js"></script>
+<script src="js/data-source.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById("nav-whatsapp").href = whatsappLink();
+  document.getElementById("footer-whatsapp").href = whatsappLink();
+  document.getElementById("product-grid").innerHTML = skeletonCardsHTML(6);
+
+  const searchInput = document.getElementById("f-search");
+  const grid = document.getElementById("product-grid");
+  const emptyState = document.getElementById("empty-state");
+  const resultsCount = document.getElementById("results-count");
+
+  const params = new URLSearchParams(window.location.search);
+  const state = {
+    category: params.get("category") || "All",
+    occasion: "All",
+    sort: "default",
+  };
+
+  const OCCASION_OPTIONS = [
+    { value: "All", label: "All" },
+    { value: "Everyday", label: "Everyday" },
+    { value: "Festive", label: "Festive" },
+    { value: "Party", label: "Party" },
+    { value: "Bridal", label: "Bridal" },
+  ];
+  const SORT_OPTIONS = [
+    { value: "default", label: "Featured" },
+    { value: "price-asc", label: "Price: Low to High" },
+    { value: "price-desc", label: "Price: High to Low" },
+    { value: "name-asc", label: "Name: A–Z" },
+  ];
+
+  function renderChipRow(hostId, options, currentValue, onPick){
+    const host = document.getElementById(hostId);
+    host.innerHTML = options.map(opt =>
+      `<button type="button" class="chip ${opt.value === currentValue ? 'active' : ''}" data-value="${opt.value}">${opt.label}</button>`
+    ).join("");
+    host.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => onPick(chip.dataset.value));
+    });
+  }
+
+  function renderFilterChips(){
+    const CATEGORIES = computeCategories(PRODUCTS);
+    if(!CATEGORIES.includes(state.category)) state.category = "All";
+
+    renderChipRow("category-chips", CATEGORIES.map(c => ({ value: c, label: c })), state.category, v => {
+      state.category = v; renderFilterChips(); applyFilters();
+    });
+    renderChipRow("occasion-chips", OCCASION_OPTIONS, state.occasion, v => {
+      state.occasion = v; renderFilterChips(); applyFilters();
+    });
+    renderChipRow("sort-chips", SORT_OPTIONS, state.sort, v => {
+      state.sort = v; renderFilterChips(); applyFilters();
+    });
+  }
+
+  function applyFilters(){
+    let list = [...PRODUCTS];
+    const q = searchInput.value.trim().toLowerCase();
+
+    if(state.category !== "All") list = list.filter(p => p.category === state.category);
+    if(state.occasion !== "All") list = list.filter(p => p.occasion === state.occasion);
+    if(q) list = list.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q)
+    );
+
+    if(state.sort === "price-asc") list.sort((a,b) => a.price - b.price);
+    if(state.sort === "price-desc") list.sort((a,b) => b.price - a.price);
+    if(state.sort === "name-asc") list.sort((a,b) => a.name.localeCompare(b.name));
+
+    grid.innerHTML = list.map(productCardHTML).join("");
+    grid.style.display = list.length ? "grid" : "none";
+    emptyState.style.display = list.length ? "none" : "block";
+    resultsCount.textContent = `${list.length} piece${list.length !== 1 ? "s" : ""}`;
+  }
+
+  function renderCatalogue(){
+    renderFilterChips();
+    applyFilters();
+  }
+
+  searchInput.addEventListener("input", applyFilters);
+
+  (async () => {
+    await loadProducts();
+    renderCatalogue();
+    hidePageLoaderWhenReady();
+  })();
+
+  // A background sheet refresh shouldn't wipe out whatever the person is currently filtering by.
+  window.addEventListener("products:updated", renderCatalogue);
+</script>
+</body>
+</html>
